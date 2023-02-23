@@ -9,6 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.0.3
         with:
@@ -16,5 +17,5 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
-        run: dotent build --no-restore
+        run: dotnet build --no-restore
         
