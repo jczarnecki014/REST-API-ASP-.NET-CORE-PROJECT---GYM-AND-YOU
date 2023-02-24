@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAndYou.Migrations
 {
     [DbContext(typeof(DbConnection))]
-    [Migration("20230224082415_AddBasicTableToDb")]
+    [Migration("20230224104841_AddBasicTableToDb")]
     partial class AddBasicTableToDb
     {
         /// <inheritdoc />
@@ -37,6 +37,9 @@ namespace GymAndYou.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("GymId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -46,6 +49,9 @@ namespace GymAndYou.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GymId")
+                        .IsUnique();
 
                     b.ToTable("Addreses");
                 });
@@ -91,9 +97,6 @@ namespace GymAndYou.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -108,9 +111,6 @@ namespace GymAndYou.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique();
 
                     b.ToTable("Gyms");
                 });
@@ -163,6 +163,17 @@ namespace GymAndYou.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("GymAndYou.Entities.Address", b =>
+                {
+                    b.HasOne("GymAndYou.Entities.Gym", "Gym")
+                        .WithOne("Address")
+                        .HasForeignKey("GymAndYou.Entities.Address", "GymId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gym");
+                });
+
             modelBuilder.Entity("GymAndYou.Entities.AviableEquipment", b =>
                 {
                     b.HasOne("GymAndYou.Entities.Gym", "Gym")
@@ -172,17 +183,6 @@ namespace GymAndYou.Migrations
                         .IsRequired();
 
                     b.Navigation("Gym");
-                });
-
-            modelBuilder.Entity("GymAndYou.Entities.Gym", b =>
-                {
-                    b.HasOne("GymAndYou.Entities.Address", "Address")
-                        .WithOne("Gym")
-                        .HasForeignKey("GymAndYou.Entities.Gym", "AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("GymAndYou.Entities.Members", b =>
@@ -196,14 +196,11 @@ namespace GymAndYou.Migrations
                     b.Navigation("Gym");
                 });
 
-            modelBuilder.Entity("GymAndYou.Entities.Address", b =>
-                {
-                    b.Navigation("Gym")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("GymAndYou.Entities.Gym", b =>
                 {
+                    b.Navigation("Address")
+                        .IsRequired();
+
                     b.Navigation("AviableEquipments");
 
                     b.Navigation("Members");

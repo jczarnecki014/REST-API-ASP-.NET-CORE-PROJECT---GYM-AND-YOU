@@ -1,4 +1,6 @@
-﻿namespace GymAndYou.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GymAndYou.Entities;
     public class Members
     {
         public int Id { get; set; }
@@ -11,6 +13,7 @@
         public string Sex { get;set; }
         public DateTime JoinDate { get;set;}
         public int GymId { get;set; }
+        [ForeignKey(nameof(GymId))]
         public Gym Gym { get;set; }
 
     }
