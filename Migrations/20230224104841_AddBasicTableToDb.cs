@@ -12,21 +12,6 @@ namespace GymAndYou.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Addreses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addreses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Gyms",
                 columns: table => new
                 {
@@ -34,16 +19,31 @@ namespace GymAndYou.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OpeningHours = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
+                    OpeningHours = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Gyms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addreses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GymId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addreses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Gyms_Addreses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Addreses",
+                        name: "FK_Addreses_Gyms_GymId",
+                        column: x => x.GymId,
+                        principalTable: "Gyms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -99,15 +99,15 @@ namespace GymAndYou.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Addreses_GymId",
+                table: "Addreses",
+                column: "GymId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AviableEquipments_GymId",
                 table: "AviableEquipments",
                 column: "GymId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Gyms_AddressId",
-                table: "Gyms",
-                column: "AddressId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Members_GymId",
@@ -119,6 +119,9 @@ namespace GymAndYou.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Addreses");
+
+            migrationBuilder.DropTable(
                 name: "AviableEquipments");
 
             migrationBuilder.DropTable(
@@ -126,9 +129,6 @@ namespace GymAndYou.Migrations
 
             migrationBuilder.DropTable(
                 name: "Gyms");
-
-            migrationBuilder.DropTable(
-                name: "Addreses");
         }
     }
 }
