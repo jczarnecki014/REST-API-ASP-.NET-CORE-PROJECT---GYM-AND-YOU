@@ -2,11 +2,13 @@
 
 namespace GymAndYou.Controllers
 {
-    public class TestController : Controller
+    [Route("/api")]
+    public class TestController : ControllerBase
     {
         public IActionResult Index()
         {
-        return View();
+            throw (new Exception());
+            return Ok("rlo");
         }
     }
 }
