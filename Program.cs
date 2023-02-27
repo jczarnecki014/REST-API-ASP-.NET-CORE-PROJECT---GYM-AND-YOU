@@ -1,4 +1,5 @@
 using GymAndYou.DatabaseConnection;
+using GymAndYou.Middleware;
 using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 
@@ -12,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-
+builder.Services.AddScoped<ExceptionHandler>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DbConnection>(option=>
 { 
@@ -20,9 +21,6 @@ builder.Services.AddDbContext<DbConnection>(option=>
 });
 builder.Services.AddScoped<DatabaseSeeder>();
 
-var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
-
-logger.Debug("test");
 
 var app = builder.Build();
 
@@ -33,6 +31,8 @@ var DbSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
 DbSeeder.SeedDatabase();
 
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ExceptionHandler>();
 
 app.UseHttpsRedirection();
 
