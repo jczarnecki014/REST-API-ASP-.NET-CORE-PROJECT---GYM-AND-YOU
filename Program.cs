@@ -1,7 +1,15 @@
 using GymAndYou.DatabaseConnection;
 using Microsoft.EntityFrameworkCore;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// NLog: Setup NLog for Dependency injection
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
+
+
 
 // Add services to the container.
 
@@ -12,7 +20,13 @@ builder.Services.AddDbContext<DbConnection>(option=>
 });
 builder.Services.AddScoped<DatabaseSeeder>();
 
+var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
+logger.Debug("test");
+
 var app = builder.Build();
+
+
 var scope = app.Services.CreateScope();
 var DbSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
 

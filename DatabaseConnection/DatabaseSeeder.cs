@@ -3,6 +3,7 @@ using Bogus.Extensions.Sweden;
 using GymAndYou.Entities;
 using GymAndYou.StaticData;
 using Microsoft.AspNetCore.Http.Connections;
+using NLog;
 
 namespace GymAndYou.DatabaseConnection
 {
