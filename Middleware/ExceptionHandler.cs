@@ -1,4 +1,6 @@
-﻿namespace GymAndYou.Middleware
+﻿using GymAndYou.Exceptions;
+
+namespace GymAndYou.Middleware
 {
     public class ExceptionHandler : IMiddleware
     {
@@ -15,11 +17,17 @@
             {
                 await next.Invoke(context);
             }
-            catch(Exception ex)
+            catch(EntityNotFound error)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(error.Message);
+                _logger.LogError(error,error.Message);
+            }
+            catch(Exception error)
             {
                 context.Response.StatusCode = 500;
                 await context.Response.WriteAsync("Something went wrong..");
-                _logger.LogError(ex,ex.Message);
+                _logger.LogError(error,error.Message);
             }
         }
     }
