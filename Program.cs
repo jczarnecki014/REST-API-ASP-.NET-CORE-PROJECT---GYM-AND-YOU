@@ -1,7 +1,9 @@
 using GymAndYou.DatabaseConnection;
 using GymAndYou.Middleware;
+using GymAndYou.Services;
 using Microsoft.EntityFrameworkCore;
 using NLog.Web;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
+//Automapper config
+    builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 
 // Add services to the container.
 builder.Services.AddScoped<ExceptionHandler>();
+builder.Services.AddScoped<GymService>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DbConnection>(option=>
 { 
