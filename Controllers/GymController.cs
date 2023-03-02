@@ -10,9 +10,9 @@ namespace GymAndYou.Controllers
     public class GymController : ControllerBase
     {
         
-        private readonly GymService _service;
+        private readonly IGymService _service;
 
-        public GymController(GymService service)
+        public GymController(IGymService service)
         {
             _service = service;
         }

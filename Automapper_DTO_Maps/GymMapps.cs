@@ -17,6 +17,8 @@ namespace GymAndYou.Automapper_Maps
 
            CreateMap<UpsertGymDTO,Gym>()
                .ForMember(m => m.Address, c => c.MapFrom(dto => new Address(){ City = dto.City, StreetName = dto.StreetName, PostalCode = dto.PostalCode } ));
+           
+           CreateMap<AddEquipmentDTO,AviableEquipment>();
           
         }
     }
