@@ -10,8 +10,8 @@ namespace GymAndYou.Controllers
     [ApiController]
     public class EquipmentController : ControllerBase
     {
-        private readonly EquipmentService _service;
-        public EquipmentController(EquipmentService equipmentService)
+        private readonly IEquipmentService _service;
+        public EquipmentController(IEquipmentService equipmentService)
         {
             _service = equipmentService;
         }
@@ -31,17 +31,24 @@ namespace GymAndYou.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateEquipment([FromRoute] int gymId, [FromBody] AddEquipmentDTO equipmentDTO)
+        public IActionResult CreateEquipment([FromRoute] int gymId, [FromBody] UpsertEquipmentDTO equipmentDTO)
         {
             int equipmentId = _service.AddEquipment(gymId,equipmentDTO);
             return Created($"/api/gym/{gymId}/equipment/{equipmentId}",null);
         }
 
         [HttpDelete("{equipmentId}")]
-        public IActionResult RemoveEquipment([FromRoute] int equipmentId)
+        public IActionResult RemoveEquipment([FromRoute] int gymId, [FromRoute] int equipmentId)
         {
-            _service.DeleteEquipment(equipmentId);
+            _service.DeleteEquipment(gymId,equipmentId);
             return NoContent();
+        }
+
+        [HttpPut("{equipmentId}")]
+        public IActionResult UpdateEquipment([FromRoute] int gymId, [FromRoute] int equipmentId, [FromBody] UpsertEquipmentDTO upsertEquipmentDTO)
+        {
+            _service.UpdateEquipment(gymId,equipmentId,upsertEquipmentDTO);
+            return Ok();
         }
 
     }
