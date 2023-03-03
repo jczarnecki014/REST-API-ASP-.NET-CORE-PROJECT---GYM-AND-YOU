@@ -1,4 +1,9 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using GymAndYou.DatabaseConnection;
+using GymAndYou.DTO_Models;
+using GymAndYou.DTO_Models.Validators;
+using GymAndYou.Entities;
 using GymAndYou.Middleware;
 using GymAndYou.Services;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +22,30 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-builder.Services.AddScoped<ExceptionHandler>();
-builder.Services.AddScoped<IGymService,GymService>();
-builder.Services.AddScoped<EquipmentService>();
-builder.Services.AddControllers();
-builder.Services.AddDbContext<DbConnection>(option=>
-{ 
-    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-builder.Services.AddScoped<DatabaseSeeder>();
+
+    //Middleware services
+    builder.Services.AddScoped<ExceptionHandler>();
+
+    //Controllers services
+    builder.Services.AddScoped<IGymService,GymService>();
+    builder.Services.AddScoped<IEquipmentService,EquipmentService>();
+    builder.Services.AddScoped<IMemberService,MemberService>();
+
+    //Validators services
+    builder.Services.AddScoped<IValidator<UpsertMemberDTO>,AddMemberDtoValidator>();
+    builder.Services.AddScoped<IValidator<UpsertEquipmentDTO>,AddEquipmentDTOValidator>();
+
+    //Database services
+    builder.Services.AddDbContext<DbConnection>(option=>
+    { 
+        option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    });
+    builder.Services.AddScoped<DatabaseSeeder>();
+
+    //Additional services
+    builder.Services.AddControllers();
+    builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
 
 
 var app = builder.Build();

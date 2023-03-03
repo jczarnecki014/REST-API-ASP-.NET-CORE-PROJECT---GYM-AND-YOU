@@ -9,21 +9,32 @@ using System;
 
 namespace GymAndYou.Services
 {
-    public class EquipmentService
+    public interface IEquipmentService
+    {
+        int AddEquipment(int gymId, UpsertEquipmentDTO equipmentDTO);
+        void DeleteEquipment(int gymId,int equipmentId);
+        List<AviableEquipmentDTO> GetAll(int gymId);
+        AviableEquipmentDTO GetById(int gymId, int equipmentId);
+        void UpdateEquipment(int gymId, int equipmentId, UpsertEquipmentDTO upsertEquipmentDTO);
+    }
+
+    public class EquipmentService : IEquipmentService
     {
         private readonly DbConnection _db;
         private readonly ILogger<EquipmentService> _logger;
         private readonly IMapper _mapper;
-        public EquipmentService(DbConnection db,ILogger<EquipmentService> logger,IMapper mapper)
+        private readonly IGymService _gymService;
+        public EquipmentService(DbConnection db, ILogger<EquipmentService> logger, IMapper mapper, IGymService gymService)
         {
             _db = db;
             _logger = logger;
             _mapper = mapper;
+            _gymService = gymService;
         }
 
         public List<AviableEquipmentDTO> GetAll(int gymId)
         {
-            var gym = GetGym(gymId);
+            var gym = _gymService.GetGym(gymId,"AviableEquipments");
 
             var aviableEquipment = _mapper.Map<List<AviableEquipmentDTO>>(gym.AviableEquipments);
 
@@ -32,23 +43,16 @@ namespace GymAndYou.Services
 
         public AviableEquipmentDTO GetById(int gymId, int equipmentId)
         {
-            var gym = GetGym(gymId);
-
-            var equipment = _db.AviableEquipments.FirstOrDefault(u => u.Id == equipmentId);
-
-            if(equipment is null || equipment.GymId != gymId)
-            {
-                throw new EntityNotFound("Equipment or Gym with this Id doesn't exist");
-            }
+            var equipment = GetEquipment(gymId, equipmentId);
 
             var aviableEquipment = _mapper.Map<AviableEquipmentDTO>(equipment);
 
             return aviableEquipment;
         }
 
-        public int AddEquipment(int gymId, AddEquipmentDTO equipmentDTO)
+        public int AddEquipment(int gymId, UpsertEquipmentDTO equipmentDTO)
         {
-            var gym = GetGym(gymId);
+            var gym = _gymService.GetGym(gymId,"AviableEquipments");
 
             var Equipment = _mapper.Map<AviableEquipment>(equipmentDTO);
             Equipment.GymId = gymId;
@@ -62,14 +66,9 @@ namespace GymAndYou.Services
 
         }
 
-        public void DeleteEquipment(int equipmentId)
+        public void DeleteEquipment(int gymId,int equipmentId)
         {
-            var equipment = _db.AviableEquipments.FirstOrDefault( u => u.Id == equipmentId);
-
-            if(equipment is null)
-            {
-                throw new EntityNotFound("Equipment with this ID doesn't exist");
-            }
+            var equipment = GetEquipment(gymId,equipmentId);
 
             _db.AviableEquipments.Remove(equipment);
             _db.SaveChanges();
@@ -77,19 +76,32 @@ namespace GymAndYou.Services
             _logger.LogInformation($"Equipment with ID = {equipmentId} has been removed from gym with ID = {equipment.GymId} ");
         }
 
-        private Gym GetGym(int gymId)
+        public void UpdateEquipment(int gymId, int equipmentId, UpsertEquipmentDTO upsertEquipmentDTO)
         {
-            var gym = _db.Gyms
-                        .Include("AviableEquipments")
-                        .FirstOrDefault(u => u.Id == gymId);
+            var equipment = GetEquipment(gymId,equipmentId);
 
-            if(gym is null)
-            {
-                throw new EntityNotFound("Gym with this ID doesn't exist");
-            }
+            equipment.Name = upsertEquipmentDTO.Name;
+            equipment.Description = upsertEquipmentDTO.Description;
+            equipment.BodyPart = upsertEquipmentDTO.BodyPart;
+            equipment.MaxWeight = upsertEquipmentDTO.MaxWeight;
 
-            return gym;
+            _db.SaveChanges();
+
+            _logger.LogInformation($"Equipment with ID = {equipmentId} has been updated");
         }
 
+        private AviableEquipment GetEquipment(int gymId, int equipmentId)
+        {
+            var gym = _gymService.GetGym(gymId,"AviableEquipments");
+
+            var equipment = gym.AviableEquipments.FirstOrDefault( f => f.Id == equipmentId);
+            
+            if(equipment is null || equipment.GymId != gymId)
+            {
+                throw new EntityNotFound("Equipment with this ID doesn't exist or doesn't exist in this gym");
+            }
+
+            return equipment;
+        }
     }
 }
