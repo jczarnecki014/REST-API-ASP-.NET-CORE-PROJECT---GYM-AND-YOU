@@ -6,6 +6,7 @@ using GymAndYou.DTO_Models.Validators;
 using GymAndYou.Entities;
 using GymAndYou.Middleware;
 using GymAndYou.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using System.Reflection;
@@ -25,6 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     //Middleware services
     builder.Services.AddScoped<ExceptionHandler>();
+    builder.Services.AddSwaggerGen();
 
     //Controllers services
     builder.Services.AddScoped<IGymService,GymService>();
@@ -61,6 +63,12 @@ DbSeeder.SeedDatabase();
 app.UseMiddleware<ExceptionHandler>();
 
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI( c => 
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "GymAndYou");
+} );
 
 app.UseAuthorization();
 

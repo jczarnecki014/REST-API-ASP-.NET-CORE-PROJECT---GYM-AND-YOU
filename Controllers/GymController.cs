@@ -19,21 +19,21 @@ namespace GymAndYou.Controllers
 
         [HttpGet]
         [Route("{gymId}")]
-        public IActionResult GetById([FromRoute] int gymId)
+        public ActionResult<Gym> GetById([FromRoute] int gymId)
         {
             var gym = _service.GetGymById(gymId);
             return Ok(gym);
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public ActionResult<List<Gym>> GetAll()
         {
             var gyms = _service.GetAll();
             return Ok(gyms);
         }
 
         [HttpPost]
-        public IActionResult CreateGym([FromBody] UpsertGymDTO gym)
+        public ActionResult<string> CreateGym([FromBody] UpsertGymDTO gym)
         {
            int gymId = _service.CreateGym(gym);
            return Created($"/api/gym/{gymId}",null);

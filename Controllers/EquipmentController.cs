@@ -17,21 +17,21 @@ namespace GymAndYou.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromRoute] int gymId)
+        public ActionResult<List<AviableEquipment>> GetAll([FromRoute] int gymId)
         {
             var AviableEquipmentDTO = _service.GetAll(gymId);
             return Ok(AviableEquipmentDTO);
         }
 
         [HttpGet("{equipmentId}")]
-        public IActionResult Get([FromRoute] int gymId,[FromRoute] int equipmentId)
+        public ActionResult<AviableEquipment> Get([FromRoute] int gymId,[FromRoute] int equipmentId)
         {
             var AviableEquipmentDTO = _service.GetById(gymId,equipmentId);
             return Ok(AviableEquipmentDTO);
         }
 
         [HttpPost]
-        public IActionResult CreateEquipment([FromRoute] int gymId, [FromBody] UpsertEquipmentDTO equipmentDTO)
+        public ActionResult<string> CreateEquipment([FromRoute] int gymId, [FromBody] UpsertEquipmentDTO equipmentDTO)
         {
             int equipmentId = _service.AddEquipment(gymId,equipmentDTO);
             return Created($"/api/gym/{gymId}/equipment/{equipmentId}",null);

@@ -1,4 +1,5 @@
 ﻿using GymAndYou.DTO_Models;
+using GymAndYou.Entities;
 using GymAndYou.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -17,21 +18,21 @@ namespace GymAndYou.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromRoute] int gymId)
+        public ActionResult<List<Members>> GetAll([FromRoute] int gymId)
         {
             var members = _service.GetAll(gymId);
             return Ok(members);
         }
 
         [HttpGet("{memberId}")]
-        public IActionResult GetById([FromRoute] int gymId, [FromRoute] int memberId)
+        public ActionResult<Members> GetById([FromRoute] int gymId, [FromRoute] int memberId)
         {
             var member = _service.GetById(gymId,memberId);
             return Ok(member);
         }
 
         [HttpPost]
-        public IActionResult CreateMember([FromRoute] int gymId, [FromBody] UpsertMemberDTO memberDTO)
+        public ActionResult<string> CreateMember([FromRoute] int gymId, [FromBody] UpsertMemberDTO memberDTO)
         {
             var memberId = _service.CreateMember(gymId,memberDTO);
             return Created($"/api/gym/{gymId}/members/{memberId}",null);
