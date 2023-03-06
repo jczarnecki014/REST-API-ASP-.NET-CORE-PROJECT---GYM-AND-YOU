@@ -3,8 +3,10 @@ using GymAndYou.DatabaseConnection;
 using GymAndYou.DTO_Models;
 using GymAndYou.Entities;
 using GymAndYou.Exceptions;
+using GymAndYou.Models.Query_Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq.Expressions;
 
 namespace GymAndYou.Services
 {
@@ -12,7 +14,7 @@ namespace GymAndYou.Services
     {
         int CreateGym(UpsertGymDTO gymDto);
         void DeleteGym(int gymId);
-        List<GymDTO> GetAll();
+        PageResoult<GymDTO> GetAll(GymQuery query);
         GymDTO GetGymById(int gymId);
         void UpdateGym(int gymId, UpsertGymDTO gymDTO);
         Gym GetGym(int gymId,string Include);
@@ -31,15 +33,40 @@ namespace GymAndYou.Services
             _mapper = mapper;
         }
 
-        public List<GymDTO> GetAll()
+        public PageResoult<GymDTO> GetAll(GymQuery query)
         {
-            var gym = _db.Gyms
+            var baseQuery = _db.Gyms
                         .Include("Address")
-                        .Include("AviableEquipments");
+                        .Include("AviableEquipments")
+                        .Where(u => query.SearhPhrase == null || 
+                               u.Name.ToLower().Contains(query.SearhPhrase.ToLower()) || 
+                               u.Description.ToLower().Contains(query.SearhPhrase.ToLower()));
+                        
+            if(!String.IsNullOrEmpty(query.SortBy))
+            {
+                var columnSelectors = new Dictionary<string,Expression<Func<Gym,object>>>
+                {
+                    {nameof(Gym.Name), r => r.Name },
+                    {nameof(Gym.Description), r => r.Description }
+                };
 
-            var gymDTO = _mapper.Map<List<GymDTO>>(gym);
+                var selectedColumn = columnSelectors[query.SortBy];
 
-            return gymDTO;
+                baseQuery = query.SortDirection == SortDirection.Asc ? baseQuery.OrderBy(selectedColumn) : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var gyms = baseQuery
+                        .Skip(query.PageSize * (query.PageNumber - 1))
+                        .Take(query.PageSize)
+                        .ToList();
+
+            var gymDTO = _mapper.Map<List<GymDTO>>(gyms);
+
+            var totalItemsCount = baseQuery.Count();
+
+            var resoults = new PageResoult<GymDTO>(gymDTO,query.PageSize,query.PageNumber,totalItemsCount);
+
+            return resoults;
         }
 
         public GymDTO GetGymById(int gymId)

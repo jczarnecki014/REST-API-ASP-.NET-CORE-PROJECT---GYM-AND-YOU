@@ -36,6 +36,7 @@ var builder = WebApplication.CreateBuilder(args);
     //Validators services
     builder.Services.AddScoped<IValidator<UpsertMemberDTO>,AddMemberDtoValidator>();
     builder.Services.AddScoped<IValidator<UpsertEquipmentDTO>,AddEquipmentDTOValidator>();
+    builder.Services.AddScoped<IValidator<GymQuery>,GymQueryValidator>();
 
     //Database services
     builder.Services.AddDbContext<DbConnection>(option=>
