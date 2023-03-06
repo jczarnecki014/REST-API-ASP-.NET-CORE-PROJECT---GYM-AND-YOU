@@ -1,5 +1,6 @@
 ﻿using GymAndYou.DTO_Models;
 using GymAndYou.Entities;
+using GymAndYou.Models.Query_Models;
 using GymAndYou.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,9 +27,9 @@ namespace GymAndYou.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Gym>> GetAll()
+        public ActionResult<PageResoult<GymDTO>> GetAll([FromQuery] GymQuery query)
         {
-            var gyms = _service.GetAll();
+            var gyms = _service.GetAll(query);
             return Ok(gyms);
         }
 
