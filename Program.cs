@@ -46,6 +46,17 @@ var builder = WebApplication.CreateBuilder(args);
     });
     builder.Services.AddScoped<DatabaseSeeder>();
 
+    //CORSE Settings
+    builder.Services.AddCors(option => 
+    {
+        option.AddPolicy("FrontEndApplication", policyBuilder => 
+        {
+            policyBuilder.AllowAnyHeader();
+            policyBuilder.AllowAnyMethod();
+            policyBuilder.WithOrigins(builder.Configuration["AllowedOrigin"]);
+        });
+    });
+
     //Additional services
     builder.Services.AddControllers();
     builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
@@ -61,6 +72,8 @@ var DbSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
 DbSeeder.SeedDatabase();
 
 // Configure the HTTP request pipeline.
+
+app.UseCors("FrontEndApplication");
 
 app.UseStaticFiles();
 
