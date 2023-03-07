@@ -20,6 +20,7 @@ namespace GymAndYou.Controllers
 
         [HttpGet]
         [Route("{gymId}")]
+        [ResponseCache(Duration = 12000, VaryByQueryKeys = new[]{"gymId"})]
         public ActionResult<Gym> GetById([FromRoute] int gymId)
         {
             var gym = _service.GetGymById(gymId);
