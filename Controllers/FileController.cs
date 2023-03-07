@@ -15,6 +15,7 @@ namespace GymAndYou.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 1200, VaryByQueryKeys = new[]{"fileName"})]
         public IActionResult Get([FromQuery] string fileName)
         {
             var fileResoult = _service.GetFile(fileName);

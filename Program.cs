@@ -73,6 +73,8 @@ DbSeeder.SeedDatabase();
 
 // Configure the HTTP request pipeline.
 
+app.UseResponseCaching();
+
 app.UseCors("FrontEndApplication");
 
 app.UseStaticFiles();
