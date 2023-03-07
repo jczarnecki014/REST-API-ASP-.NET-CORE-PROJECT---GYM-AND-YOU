@@ -23,6 +23,12 @@ namespace GymAndYou.Middleware
                 await context.Response.WriteAsync(error.Message);
                 _logger.LogError(error,error.Message);
             }
+            catch(FileNotFound error)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(error.Message);
+                _logger.LogError(error,error.Message);
+            }
             catch(Exception error)
             {
                 context.Response.StatusCode = 500;

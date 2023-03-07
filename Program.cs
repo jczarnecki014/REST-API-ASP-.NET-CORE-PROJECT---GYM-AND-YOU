@@ -32,6 +32,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IGymService,GymService>();
     builder.Services.AddScoped<IEquipmentService,EquipmentService>();
     builder.Services.AddScoped<IMemberService,MemberService>();
+    builder.Services.AddScoped<IFileService,FileService>();
 
     //Validators services
     builder.Services.AddScoped<IValidator<UpsertMemberDTO>,AddMemberDtoValidator>();
@@ -60,6 +61,8 @@ var DbSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
 DbSeeder.SeedDatabase();
 
 // Configure the HTTP request pipeline.
+
+app.UseStaticFiles();
 
 app.UseMiddleware<ExceptionHandler>();
 
