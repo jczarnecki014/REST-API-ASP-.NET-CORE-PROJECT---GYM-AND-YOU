@@ -14,6 +14,7 @@ namespace GymAndYou.DatabaseConnection;
         public DbSet<Address> Addreses {get;set;}
         public DbSet<Members> Members {get;set;}
         public DbSet<AviableEquipment> AviableEquipments {get;set;}
+        public DbSet<User> Users { get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         { 
@@ -32,6 +33,16 @@ namespace GymAndYou.DatabaseConnection;
                 .IsRequired();
             modelBuilder.Entity<AviableEquipment>()
                 .Property(u=>u.BodyPart)
+                .IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired();
+            modelBuilder.Entity<User>()
+                .Property(u => u.UserName)
+                .IsRequired()
+                .HasMaxLength(50);
+            modelBuilder.Entity<User>()
+                .Property(u => u.PasswordHash)
                 .IsRequired();
         }
     }
