@@ -35,13 +35,18 @@ namespace GymAndYou.Models.DTO_Models.Validators
             RuleFor(u => u.Password)
                 .NotNull()
                 .NotEmpty()
-                .Matches(Static.StrongPasswordREGEX) //StrongPassword requirement
+                .Matches(Static.StrongPasswordREGEX)
                 .WithMessage("Password must have at least one uppercase letter, one lowercase letter, one digit, " +
                              "one special character and is at least eight characters long  ");
 
             RuleFor(u => u.ConfirmPassword)
                 .Equal(u => u.Password)
                 .WithMessage("Password and confirmPassword must be same");
+
+            RuleFor(u => u.RoleId)
+                .NotEmpty()
+                .NotNull()
+                .InclusiveBetween(1,3);
 
         } 
     }
