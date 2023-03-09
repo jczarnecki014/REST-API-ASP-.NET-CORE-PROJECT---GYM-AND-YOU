@@ -2,6 +2,7 @@
 using GymAndYou.Entities;
 using GymAndYou.Models.Query_Models;
 using GymAndYou.Services;
+using GymAndYou.StaticData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,6 @@ namespace GymAndYou.Controllers
 
         [HttpGet]
         [Route("{gymId}")]
-        [ResponseCache(Duration = 12000, VaryByQueryKeys = new[]{"gymId"})]
         public ActionResult<Gym> GetById([FromRoute] int gymId)
         {
             var gym = _service.GetGymById(gymId);
@@ -44,6 +44,7 @@ namespace GymAndYou.Controllers
 
         [HttpDelete]
         [Route("{gymId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult DeleteGym([FromRoute] int gymId)
         {
             _service.DeleteGym(gymId);

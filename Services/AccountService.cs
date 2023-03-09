@@ -32,7 +32,9 @@ namespace GymAndYou.Services
 
         public string GetJWTToken(LoginUserDTO loginUserDTO)
         {
-            var user = _db.Users.FirstOrDefault(u => u.UserName == loginUserDTO.UserName);
+            var user = _db.Users
+                .Include("Role")
+                .FirstOrDefault(u => u.UserName == loginUserDTO.UserName);
 
             if(user is null)
             {
@@ -51,6 +53,7 @@ namespace GymAndYou.Services
             {
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Name,user.UserName.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.Name),
                 new Claim("Nationality",user.Nationality)
             };
 
@@ -85,6 +88,7 @@ namespace GymAndYou.Services
             var user = _mapper.Map<User>(createUserDTO);
 
             user.PasswordHash = _passwordHasher.HashPassword(user,createUserDTO.Password);
+            user.RoleId = createUserDTO.RoleId;
 
             _db.Users.Add(user);
             _db.SaveChanges();

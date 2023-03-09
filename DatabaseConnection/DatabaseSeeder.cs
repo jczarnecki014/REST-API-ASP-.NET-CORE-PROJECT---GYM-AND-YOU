@@ -3,6 +3,7 @@ using Bogus.Extensions.Sweden;
 using GymAndYou.Entities;
 using GymAndYou.StaticData;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 namespace GymAndYou.DatabaseConnection
@@ -26,6 +27,18 @@ namespace GymAndYou.DatabaseConnection
         {
             if(_context.Database.CanConnect())
             {
+                /* 
+                    If exisist pending migrations - update database
+                 */
+                if(_context.Database.GetPendingMigrations().Any())
+                {
+                    _context.Database.Migrate();
+                }
+
+                /* 
+                    If default gyms don't exist - Generate them
+                 */
+
                 if(! (_context.Gyms.Any() || _context.Members.Any() || _context.AviableEquipments.Any()) )
                 {
                     var entities = CreateEnities();
@@ -33,6 +46,16 @@ namespace GymAndYou.DatabaseConnection
                     _context.SaveChanges();
                 }
 
+                /* 
+                    If default roles don't exist - Generate them
+                 */
+
+                if(!_context.Roles.Any())
+                {
+                    var roles = CreateRoles();
+                    _context.AddRange(roles);
+                    _context.SaveChanges();
+                }
             }
         }
 
@@ -78,6 +101,17 @@ namespace GymAndYou.DatabaseConnection
             var GymList = Gyms.Generate(20);
 
             return GymList;
+        }
+        private  List<Role> CreateRoles()
+        {
+            var roles = new List<Role>()
+            {
+                new Role(){Name = Static.System_Roles_User},
+                new Role(){Name = Static.System_Roles_Manager},
+                new Role(){Name = Static.System_Roles_Administrator}
+            };
+
+            return roles;
         }
 
     }
