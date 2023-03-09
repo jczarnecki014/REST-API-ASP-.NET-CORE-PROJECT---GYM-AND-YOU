@@ -12,6 +12,7 @@
         public string FirstName {get;set;}
         public string LastName {get;set;}
         public string Nationality {get;set;}
+        public DateTime? RegisterDay { get;set;}
         public int RoleId {get;set;}
         public Role Role {get;set;}
         public Gym userGym { get;set;}

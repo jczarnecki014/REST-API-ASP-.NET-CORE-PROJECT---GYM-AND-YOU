@@ -19,5 +19,8 @@ namespace GymAndYou.StaticData
             public static string System_Roles_Administrator = "Admin";
             public static string System_Roles_Manager = "Manager";
             public static string System_Roles_User = "User";
+
+        //Authorization roles
+            public static int Minimum_Days_Since_Account_Create = 14; // <---- After 14 days user will able to delete gym wihch he estabilished
     }
 }
