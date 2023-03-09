@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GymAndYou.DTO_Models;
 using GymAndYou.Entities;
+using GymAndYou.Models.DTO_Models;
 
 namespace GymAndYou.Automapper_Maps
 {
@@ -23,6 +24,8 @@ namespace GymAndYou.Automapper_Maps
            CreateMap<Members,MembersDTO>();
 
            CreateMap<UpsertMemberDTO,Members>();
+
+           CreateMap<CreateUserDTO,User>();
         }
     }
 }

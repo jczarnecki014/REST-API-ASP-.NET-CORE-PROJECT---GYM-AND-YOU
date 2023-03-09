@@ -1,10 +1,12 @@
 ﻿using GymAndYou.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace GymAndYou.Controllers
 {
     [Route("/api/files")]
+    [Authorize]
     public class FileController : ControllerBase
     {
         private readonly IFileService _service;

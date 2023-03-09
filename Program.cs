@@ -5,11 +5,17 @@ using GymAndYou.DTO_Models;
 using GymAndYou.DTO_Models.Validators;
 using GymAndYou.Entities;
 using GymAndYou.Middleware;
+using GymAndYou.Models.DTO_Models;
+using GymAndYou.Models.DTO_Models.Validators;
 using GymAndYou.Services;
+using GymAndYou.StaticData;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +27,26 @@ var builder = WebApplication.CreateBuilder(args);
 //Automapper config
     builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+//Authentication
+    
+    var authenticationSettings = new AuthenticationSettings();
+    builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+
+    builder.Services.AddAuthentication(option => {
+        option.DefaultAuthenticateScheme = "Bearer";
+        option.DefaultScheme = "Bearer";
+        option.DefaultChallengeScheme = "Bearer";
+    }).AddJwtBearer(cfg => 
+    { 
+        cfg.RequireHttpsMetadata = true;
+        cfg.SaveToken = true;
+        cfg.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidIssuer = authenticationSettings.JwtIssuer,
+            ValidAudience = authenticationSettings.JwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
+        };
+    });
 
 // Add services to the container.
 
@@ -33,11 +59,13 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IEquipmentService,EquipmentService>();
     builder.Services.AddScoped<IMemberService,MemberService>();
     builder.Services.AddScoped<IFileService,FileService>();
+    builder.Services.AddScoped<AccountService>();
 
     //Validators services
     builder.Services.AddScoped<IValidator<UpsertMemberDTO>,AddMemberDtoValidator>();
     builder.Services.AddScoped<IValidator<UpsertEquipmentDTO>,AddEquipmentDTOValidator>();
     builder.Services.AddScoped<IValidator<GymQuery>,GymQueryValidator>();
+    builder.Services.AddScoped<IValidator<CreateUserDTO>,CreateUserDTOValidator>();
 
     //Database services
     builder.Services.AddDbContext<DbConnection>(option=>
@@ -60,6 +88,8 @@ var builder = WebApplication.CreateBuilder(args);
     //Additional services
     builder.Services.AddControllers();
     builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+    builder.Services.AddSingleton(authenticationSettings);
+    builder.Services.AddScoped<IPasswordHasher<User>,PasswordHasher<User>>();
 
 
 
@@ -80,6 +110,8 @@ app.UseCors("FrontEndApplication");
 app.UseStaticFiles();
 
 app.UseMiddleware<ExceptionHandler>();
+
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 

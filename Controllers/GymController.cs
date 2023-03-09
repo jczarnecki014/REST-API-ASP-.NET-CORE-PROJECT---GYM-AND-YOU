@@ -2,6 +2,7 @@
 using GymAndYou.Entities;
 using GymAndYou.Models.Query_Models;
 using GymAndYou.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymAndYou.Controllers
