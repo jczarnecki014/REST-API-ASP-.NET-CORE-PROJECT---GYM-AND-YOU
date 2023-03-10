@@ -1,15 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace GymAndYou.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRolesToDB : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<DateTime>(
+                name: "RegisterDay",
+                table: "Users",
+                type: "datetime2",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
                 name: "RoleId",
                 table: "Users",
@@ -44,9 +51,7 @@ namespace GymAndYou.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Gyms_CreatedById",
                 table: "Gyms",
-                column: "CreatedById",
-                unique: true,
-                filter: "[CreatedById] IS NOT NULL");
+                column: "CreatedById");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Gyms_Users_CreatedById",
@@ -85,6 +90,10 @@ namespace GymAndYou.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Gyms_CreatedById",
                 table: "Gyms");
+
+            migrationBuilder.DropColumn(
+                name: "RegisterDay",
+                table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "RoleId",

@@ -19,6 +19,11 @@ namespace GymAndYou.Middleware
             {
                 await next.Invoke(context);
             }
+            catch(ForbidException error)
+            {
+                context.Response.StatusCode = 404;
+                GetError(context,error);
+            }
             catch(BadRequest error)
             {
                 context.Response.StatusCode = 404;

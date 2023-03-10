@@ -36,6 +36,7 @@ namespace GymAndYou.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult<string> CreateGym([FromBody] UpsertGymDTO gym)
         {
            int gymId = _service.CreateGym(gym);
@@ -54,6 +55,7 @@ namespace GymAndYou.Controllers
 
         [HttpPut]
         [Route("{gymId}")]
+        [Authorize]
         public IActionResult UpdateGym([FromRoute] int gymId, [FromBody] UpsertGymDTO gymDTO)
         {
             _service.UpdateGym(gymId,gymDTO);

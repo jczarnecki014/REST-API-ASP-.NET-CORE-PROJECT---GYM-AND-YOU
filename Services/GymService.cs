@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using GymAndYou.AutorizationRules;
 using GymAndYou.DatabaseConnection;
 using GymAndYou.DTO_Models;
 using GymAndYou.Entities;
 using GymAndYou.Exceptions;
 using GymAndYou.Models.Query_Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
@@ -25,12 +27,16 @@ namespace GymAndYou.Services
         private readonly DbConnection _db;
         private readonly ILogger<GymService> _logger;
         private readonly IMapper _mapper;
+        private readonly IUserContextService _userContext;
+        private readonly IAuthorizationService _authorizationService;
 
-        public GymService(DbConnection db, ILogger<GymService> logger, IMapper mapper)
+        public GymService(DbConnection db, ILogger<GymService> logger, IMapper mapper, IUserContextService userContext,IAuthorizationService authorizationService)
         {
             _db = db;
             _logger = logger;
             _mapper = mapper;
+            _userContext = userContext;
+            _authorizationService = authorizationService;
         }
 
         public PageResoult<GymDTO> GetAll(GymQuery query)
@@ -88,12 +94,9 @@ namespace GymAndYou.Services
 
         public int CreateGym(UpsertGymDTO gymDto)
         {
-            if (gymDto is null)
-            {
-                throw new Exception("Recived gym entity can't be empty");
-            }
-
             var gym = _mapper.Map<Gym>(gymDto);
+            gym.CreatedById = _userContext.GetUserId;
+
 
             _db.Gyms.Add(gym);
             _db.SaveChanges();
@@ -104,13 +107,8 @@ namespace GymAndYou.Services
 
         public void DeleteGym(int gymId)
         {
-            var gym = _db.Gyms.FirstOrDefault(u => u.Id == gymId);
-
-            if (gym is null)
-            {
-                throw new EntityNotFound($"Entity with id = {gymId} wasn't found");
-            }
-
+            var gym = GetGymWithAuthorization(gymId,"Address",ResourceOperations.Delete);
+           
             _db.Gyms.Remove(gym);
             _db.SaveChanges();
             _logger.LogInformation($"Deleted gym with id = {gymId}");
@@ -118,15 +116,7 @@ namespace GymAndYou.Services
 
         public void UpdateGym(int gymId, UpsertGymDTO gymDTO)
         {
-            var gym = _db.Gyms
-                        .Include("Address")
-                        .FirstOrDefault(u => u.Id == gymId);
-
-
-            if (gym is null)
-            {
-                throw new EntityNotFound($"Entity with id = {gymId} wasn't found");
-            }
+                var gym = GetGymWithAuthorization(gymId,"Address",ResourceOperations.Update);
 
                 gym.Name = gymDTO.Name;
                 gym.Description = gymDTO.Description;
@@ -137,6 +127,27 @@ namespace GymAndYou.Services
 
                 _db.SaveChanges();
                 _logger.LogInformation($"Update gym with id = {gymId}");
+        }
+
+        private Gym GetGymWithAuthorization(int gymId, string include,ResourceOperations operation)
+        {
+            var gym = _db.Gyms
+                        .Include(include)
+                        .FirstOrDefault(u => u.Id == gymId);
+
+            if (gym is null)
+            {
+                throw new EntityNotFound("Gym with this ID doesn't exist");
+            }
+
+            var authorizationResoult = _authorizationService.AuthorizeAsync(_userContext.user,gym,new ResourceOperationRequirement(operation)).Result;
+            
+            if(!authorizationResoult.Succeeded)
+            {
+                throw new ForbidException("You haven't permission to this gym");
+            }
+
+            return gym;
         }
 
         public Gym GetGym(int gymId,string Include)

@@ -7,9 +7,9 @@ namespace GymAndYou.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly AccountService _service;
+        private readonly IAccountService _service;
 
-        public AccountController(AccountService service)
+        public AccountController(IAccountService service)
         {
             _service = service;
         }
