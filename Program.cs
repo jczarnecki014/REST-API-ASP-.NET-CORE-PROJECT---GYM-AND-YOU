@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using GymAndYou.AutorizationRules;
 using GymAndYou.DatabaseConnection;
 using GymAndYou.DTO_Models;
 using GymAndYou.DTO_Models.Validators;
@@ -9,6 +10,7 @@ using GymAndYou.Models.DTO_Models;
 using GymAndYou.Models.DTO_Models.Validators;
 using GymAndYou.Services;
 using GymAndYou.StaticData;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +49,15 @@ var builder = WebApplication.CreateBuilder(args);
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
         };
     });
+
+// Authorization
+    builder.Services.AddAuthorization(option => 
+    { 
+        option.AddPolicy("MinimumDaysSinceRegister",builder =>
+                        builder.AddRequirements(new MinimumDaysSinceCreateAccount(Static.Minimum_Days_Since_Account_Create)));
+        
+    });
+    builder.Services.AddScoped<IAuthorizationHandler,MinimumDaysSinceCreateAccountHandler>();
 
 // Add services to the container.
 

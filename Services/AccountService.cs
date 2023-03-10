@@ -54,7 +54,8 @@ namespace GymAndYou.Services
                 new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Name,user.UserName.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.Name),
-                new Claim("Nationality",user.Nationality)
+                new Claim("Nationality",user.Nationality),
+                new Claim("DayOfRegister", user.RegisterDay.Value.ToString()),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
@@ -68,10 +69,12 @@ namespace GymAndYou.Services
                 claims,
                 expires: expires,
                 signingCredentials:cred
-            
             );
             
             var TokenHandler = new JwtSecurityTokenHandler();
+
+            _logger.LogInformation($"User with email = [{user.Email}] userName = [{user.UserName}] and ID = [{user.Id}] has been logged");
+
             return TokenHandler.WriteToken(token);
 
         }
@@ -89,6 +92,7 @@ namespace GymAndYou.Services
 
             user.PasswordHash = _passwordHasher.HashPassword(user,createUserDTO.Password);
             user.RoleId = createUserDTO.RoleId;
+            user.RegisterDay = DateTime.Now;
 
             _db.Users.Add(user);
             _db.SaveChanges();
