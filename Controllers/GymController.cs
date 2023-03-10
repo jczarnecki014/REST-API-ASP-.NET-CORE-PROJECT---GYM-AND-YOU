@@ -45,6 +45,7 @@ namespace GymAndYou.Controllers
         [HttpDelete]
         [Route("{gymId}")]
         [Authorize(Policy = "MinimumDaysSinceRegister")]
+        [Authorize(Policy = "SpecyficNationality")]
         public IActionResult DeleteGym([FromRoute] int gymId)
         {
             _service.DeleteGym(gymId);

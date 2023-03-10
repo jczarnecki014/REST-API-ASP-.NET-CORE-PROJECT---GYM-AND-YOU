@@ -53,6 +53,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Authorization
     builder.Services.AddAuthorization(option => 
     { 
+        option.AddPolicy("SpecyficNationality", builder => builder.RequireClaim("Nationality",new string[]{"Poland","German","United Kingdom", "United States"}));
         option.AddPolicy("MinimumDaysSinceRegister",builder =>
                         builder.AddRequirements(new MinimumDaysSinceCreateAccount(Static.Minimum_Days_Since_Account_Create)));
         
