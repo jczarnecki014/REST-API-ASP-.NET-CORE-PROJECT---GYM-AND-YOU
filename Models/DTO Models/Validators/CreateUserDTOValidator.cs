@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
 using GymAndYou.DatabaseConnection;
+using GymAndYou.Entities;
 using GymAndYou.StaticData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace GymAndYou.Models.DTO_Models.Validators
 {
@@ -42,11 +45,11 @@ namespace GymAndYou.Models.DTO_Models.Validators
             RuleFor(u => u.ConfirmPassword)
                 .Equal(u => u.Password)
                 .WithMessage("Password and confirmPassword must be same");
-
             RuleFor(u => u.RoleId)
-                .NotEmpty()
-                .NotNull()
-                .InclusiveBetween(1,3);
+            .NotEmpty()
+                .WithMessage("[RoleID CAN'T BE EMPTY ] - You are deciding what role will have your user. I have remained this option for you so you are able to examine every options for this API")
+            .NotNull()
+            .InclusiveBetween(1,3);
 
         } 
     }

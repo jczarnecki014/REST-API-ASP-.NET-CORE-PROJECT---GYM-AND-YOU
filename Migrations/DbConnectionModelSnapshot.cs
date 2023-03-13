@@ -112,9 +112,7 @@ namespace GymAndYou.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById")
-                        .IsUnique()
-                        .HasFilter("[CreatedById] IS NOT NULL");
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("Gyms");
                 });

@@ -53,12 +53,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Authorization
     builder.Services.AddAuthorization(option => 
     { 
-        option.AddPolicy("SpecyficNationality", builder => builder.RequireClaim("Nationality",new string[]{"Poland","German","United Kingdom", "United States"}));
+        option.AddPolicy("SpecyficNationality", builder => builder.RequireClaim("Nationality",Static.Required_Nationality_To_Gym_Delete));
         option.AddPolicy("MinimumDaysSinceRegister",builder =>
                         builder.AddRequirements(new MinimumDaysSinceCreateAccount(Static.Minimum_Days_Since_Account_Create)));
         
     });
     builder.Services.AddScoped<IAuthorizationHandler,MinimumDaysSinceCreateAccountHandler>();
+    builder.Services.AddScoped<IAuthorizationHandler,ResourceOperationRequirementHandler>();
 
 // Add services to the container.
 
@@ -71,7 +72,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IEquipmentService,EquipmentService>();
     builder.Services.AddScoped<IMemberService,MemberService>();
     builder.Services.AddScoped<IFileService,FileService>();
-    builder.Services.AddScoped<AccountService>();
+    builder.Services.AddScoped<IAccountService,AccountService>();
+    builder.Services.AddScoped<IUserContextService,UserContextService>();
 
     //Validators services
     builder.Services.AddScoped<IValidator<UpsertMemberDTO>,AddMemberDtoValidator>();

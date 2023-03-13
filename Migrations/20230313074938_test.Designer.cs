@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAndYou.Migrations
 {
     [DbContext(typeof(DbConnection))]
-    [Migration("20230309085554_AddRegisterDayToUsers")]
-    partial class AddRegisterDayToUsers
+    [Migration("20230313074938_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,9 +115,7 @@ namespace GymAndYou.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById")
-                        .IsUnique()
-                        .HasFilter("[CreatedById] IS NOT NULL");
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("Gyms");
                 });

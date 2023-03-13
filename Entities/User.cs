@@ -14,7 +14,7 @@
         public string Nationality {get;set;}
         public DateTime? RegisterDay { get;set;}
         public int RoleId {get;set;}
-        public Role Role {get;set;}
-        public Gym userGym { get;set;}
+        public virtual Role Role {get;set;}
+        public virtual Gym userGym { get;set;}
     }
 }

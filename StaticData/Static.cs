@@ -22,5 +22,7 @@ namespace GymAndYou.StaticData
 
         //Authorization roles
             public static int Minimum_Days_Since_Account_Create = 14; // <---- After 14 days user will able to delete gym wihch he estabilished
+            public static string[] Required_Nationality_To_Gym_Delete = new string[]{"Poland","German","United Kingdom", "United States"};
+        //
     }
 }

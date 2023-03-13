@@ -51,6 +51,10 @@ namespace GymAndYou.DatabaseConnection;
             modelBuilder.Entity<Role>()
                 .Property(u => u.Name)
                 .IsRequired();
+            modelBuilder.Entity<Gym>()
+            .HasIndex(u=> u.CreatedById)
+            .IsUnique(false);
+            
         }
     }
 
