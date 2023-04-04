@@ -1,6 +1,8 @@
-﻿namespace GymAndYou.Entities;
+﻿using GymAndYou.Entities.EntitiesInterface;
 
-    public class Address
+namespace GymAndYou.Entities;
+
+public class Address : IDbEntity
     {
         public int Id { get; set; }
         public string City { get;set; }

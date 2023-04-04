@@ -10,12 +10,17 @@ namespace GymAndYou.DatabaseConnection;
 
         }
 
+        /* 
+          EVERY model should inherit from IDbEntity before initializing as DbSet ( for test purpose ) 
+         */
+
         public DbSet<Gym> Gyms {get;set;}
         public DbSet<Address> Addreses {get;set;}
         public DbSet<Members> Members {get;set;}
         public DbSet<AviableEquipment> AviableEquipments {get;set;}
         public DbSet<User> Users { get;set;}
         public DbSet<Role> Roles { get;set;}
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         { 

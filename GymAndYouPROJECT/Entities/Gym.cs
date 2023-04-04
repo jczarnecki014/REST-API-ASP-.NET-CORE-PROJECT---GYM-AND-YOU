@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GymAndYou.Entities.EntitiesInterface;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace GymAndYou.Entities;
 
-    public class Gym
+public class Gym : IDbEntity
     {
         [Key]
         public int Id { get; set; }
