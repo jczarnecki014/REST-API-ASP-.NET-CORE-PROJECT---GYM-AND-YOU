@@ -30,9 +30,12 @@ namespace GymAndYou.DatabaseConnection
                 /* 
                     If exisist pending migrations - update database
                  */
-                if(_context.Database.GetPendingMigrations().Any())
+                if(_context.Database.IsRelational())
                 {
-                    _context.Database.Migrate();
+                    if(_context.Database.GetPendingMigrations().Any())
+                    {
+                        _context.Database.Migrate();
+                    }
                 }
 
                 /* 

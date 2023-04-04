@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using GymAndYou.Entities.EntitiesInterface;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymAndYou.Entities;
-    public class Members
+public class Members : IDbEntity 
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

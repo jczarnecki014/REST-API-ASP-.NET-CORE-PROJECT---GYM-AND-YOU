@@ -1,6 +1,8 @@
-﻿namespace GymAndYou.Entities;
+﻿using GymAndYou.Entities.EntitiesInterface;
 
-    public class AviableEquipment
+namespace GymAndYou.Entities;
+
+public class AviableEquipment : IDbEntity
     {
         public int Id { get; set; } 
         public string Name { get; set; }
