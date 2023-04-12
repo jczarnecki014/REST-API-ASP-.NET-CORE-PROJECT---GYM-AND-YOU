@@ -15,24 +15,24 @@ namespace GymAndYou.Services
     {
         public FileResoult GetFile(string fileName)
         {
-        var filePath = this.GetFilePath(fileName);
+            var filePath = this.GetFilePath(fileName);
 
-        if (!File.Exists(filePath))
-        {
-        throw new FileNotFound("File witch this name doesn't exist in the server resources");
-        }
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFound("File witch this name doesn't exist in the server resources");
+            }
 
-        var file = File.ReadAllBytes(filePath);
+            var file = File.ReadAllBytes(filePath);
 
-        var ContentTypeProvider = new FileExtensionContentTypeProvider();
-        ContentTypeProvider.TryGetContentType(filePath, out var contentType);
+            var ContentTypeProvider = new FileExtensionContentTypeProvider();
+            ContentTypeProvider.TryGetContentType(filePath, out var contentType);
 
-        return new FileResoult()
-        {
-            fileContents = file,
-            contentType = contentType,
-            fileName = fileName,
-        };
+            return new FileResoult()
+            {
+                fileContents = file,
+                contentType = contentType,
+                fileName = fileName,
+            };
         }
 
         public string UploadFile(IFormFile file)
@@ -55,8 +55,8 @@ namespace GymAndYou.Services
 
         private string GetFilePath(string FileName)
         {
-        var solutionDirectory = Directory.GetCurrentDirectory();
-        return $"""{solutionDirectory}\PrivateFiles\{FileName}""";
+            var solutionDirectory = Directory.GetCurrentDirectory();
+            return $"""{solutionDirectory}\PrivateFiles\{FileName}""";
         }
     }
 }

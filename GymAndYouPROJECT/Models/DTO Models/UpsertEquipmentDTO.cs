@@ -2,6 +2,12 @@
 
 namespace GymAndYou.Entities
 {
+
+    /*
+        FluentValidator ensure validation for this properties
+        Balidators: path: ./Validators/AddEquipmentDTOValidator.cs
+     */
+
     public class UpsertEquipmentDTO
     {
         [Required]
@@ -12,7 +18,6 @@ namespace GymAndYou.Entities
         [MaxLength(250)]
         public string Description { get; set; }
 
-        //[CUSTOM VALIDATION]
         public string BodyPart { get;set; }
 
         [Required]
