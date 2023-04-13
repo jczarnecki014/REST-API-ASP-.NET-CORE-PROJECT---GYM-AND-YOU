@@ -15,14 +15,8 @@ namespace GymAndYou.DTO_Models.Validators
 
             RuleFor( p => p.Sex)
                 .NotNull()
-                .NotEmpty()
-                .Custom((value,context) => 
-                {
-                    if(!Sex.Contains(value.ToLower()))
-                    {
-                        context.AddFailure("Sex",$"""Sex should be in [ {String.Join(" or ", Sex) } ]""");
-                    }
-                });
+                .NotEmpty();
+
 
             RuleFor( p => p.FirstName)
                 .NotEmpty()
@@ -52,6 +46,15 @@ namespace GymAndYou.DTO_Models.Validators
             RuleFor( p => p.BirthDay)
                 .NotEmpty()
                 .NotNull();
+
+            RuleFor( p => p.Sex)
+                .Custom((value,context) => 
+                {
+                    if(value is not null && !Sex.Contains(value.ToLower()))
+                    {
+                        context.AddFailure("Sex",$"""Sex should be in [ {String.Join(" or ", Sex) } ]""");
+                    }
+                });
                  
         }
     }

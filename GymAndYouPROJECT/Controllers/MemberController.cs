@@ -49,7 +49,7 @@ namespace GymAndYou.Controllers
         public IActionResult UpdateMember([FromRoute] int gymId, [FromRoute] int memberId, [FromBody] UpsertMemberDTO upsertMemberDTO)
         {
            _service.UpdateMember(gymId,memberId, upsertMemberDTO);
-           return NoContent();
+           return Ok();
         }
 
     }

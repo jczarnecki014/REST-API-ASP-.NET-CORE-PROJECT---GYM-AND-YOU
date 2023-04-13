@@ -3,6 +3,7 @@ using GymAndYou.DatabaseConnection;
 using GymAndYou.DTO_Models;
 using GymAndYou.Entities;
 using GymAndYou.TESTS.HelpTools;
+using GymAndYouTESTS.HelpTools;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
@@ -24,7 +25,8 @@ namespace GymAndYouTESTS.ControllerTests
         public async Task GetAll_ForExistingGym_ReturnStatus200Ok()
         {
             // arrange 
-                int gymId = this.CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
             // act
                 var result = await _client.GetAsync($"/api/gym/{gymId}/equipment/");
@@ -50,7 +52,8 @@ namespace GymAndYouTESTS.ControllerTests
         {
             // arrange
                 
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
                 int equipmentId = CreateEquipment(gymId);
 
@@ -80,7 +83,9 @@ namespace GymAndYouTESTS.ControllerTests
         {
             // arrange
                 int equipmentId = 99999999;
-                int gymId = CreateGym();
+
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
             // act
                 var result = await _client.GetAsync($"/api/gym/{gymId}/equipment/{equipmentId}");
@@ -95,7 +100,8 @@ namespace GymAndYouTESTS.ControllerTests
         {
             // arrange 
                 
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
                 UpsertEquipmentDTO newEquipment = new()
                 {
@@ -138,7 +144,8 @@ namespace GymAndYouTESTS.ControllerTests
         {
             // arrange 
                 
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
                 UpsertEquipmentDTO newEquipment = new()
                 {
@@ -155,7 +162,8 @@ namespace GymAndYouTESTS.ControllerTests
         public async Task RemoveEquipment_ForExistingGymAndEquipment_ReturnStatusCode204NoContent()
         {
             // arrange 
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
                 int equipmentId = CreateEquipment(gymId);
 
@@ -170,7 +178,8 @@ namespace GymAndYouTESTS.ControllerTests
         public async Task RemoveEquipment_ForEquipmentNotExistingInGym_ReturnStatusCode404NotFound()
         {
             // arrange
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
                 int equipmentId = 999;
             // act
                 var result = await _client.DeleteAsync($"/api/gym/{gymId}/equipment/{equipmentId}");
@@ -198,7 +207,8 @@ namespace GymAndYouTESTS.ControllerTests
         public async Task UpdateEquipment_ForExistingGymAndEquipmentAndValidQueryParameter_ReturnStatusCode200Ok()
         {
             // arrange
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
                 int equipmentId = CreateEquipment(gymId);
 
@@ -220,7 +230,8 @@ namespace GymAndYouTESTS.ControllerTests
         public async Task UpdateEquipment_ForNotExistingEquipmentInGym_ReturnStatusCode404NotFound()
         {
             // arrange
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
                 int notExistingEquipmentId = 99999;
                 UpsertEquipmentDTO equipmentDTO = new UpsertEquipmentDTO()
                 {
@@ -269,7 +280,8 @@ namespace GymAndYouTESTS.ControllerTests
                     // Invalid 
                 };
 
-                int gymId = CreateGym();
+                var gym = GymProvider.GetGym();
+                var gymId = _factory.SeedDatabase(gym);
 
                 int equipmentId = CreateEquipment(gymId);
 
@@ -279,23 +291,6 @@ namespace GymAndYouTESTS.ControllerTests
                 result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
-        private int CreateGym()
-        {
-            Gym gym= new Gym()
-                {
-                    Name = "test",
-                    Description = "test",
-                    OpeningHours = "test",
-                        Address = new Address()
-                        {
-                            City= "test",
-                            PostalCode= "test",
-                            StreetName= "test",
-                        }
-                };
-            int gymId = _factory.SeedDatabase<Gym>(gym);
-            return gymId;
-        }
 
         private int CreateEquipment(int gymId)
         {
