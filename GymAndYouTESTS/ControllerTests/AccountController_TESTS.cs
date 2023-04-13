@@ -64,6 +64,8 @@ namespace GymAndYouTESTS.ControllerTests
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
 
+
+
         [Fact]
         public async Task LoginUser_ForValidQueryParameter_ReturnStatusCode200Ok()
         {
@@ -88,6 +90,8 @@ namespace GymAndYouTESTS.ControllerTests
             jwtToken.Should().NotBeNull();
         }
 
+
+
         [Fact]
         public async Task LoginUser_ForInValidQueryParameter_ReturnStatusCode400BadRequest()
         {
@@ -108,7 +112,6 @@ namespace GymAndYouTESTS.ControllerTests
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
             var test = result.Content.ReadAsStream();
         }
-
 
 
 

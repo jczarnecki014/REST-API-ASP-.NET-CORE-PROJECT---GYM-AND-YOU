@@ -21,7 +21,7 @@ namespace GymAndYou.Middleware
             }
             catch(ForbidException error)
             {
-                context.Response.StatusCode = 404;
+                context.Response.StatusCode = 403;
                 GetError(context,error);
             }
             catch(BadRequest error)
