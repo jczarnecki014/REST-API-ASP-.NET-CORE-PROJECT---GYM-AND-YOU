@@ -158,7 +158,7 @@ namespace GymAndYou.Services
 
             if (gym is null)
             {
-            throw new EntityNotFound("Gym with this ID doesn't exist");
+                throw new EntityNotFound("Gym with this ID doesn't exist");
             }
 
             return gym;

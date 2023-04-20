@@ -53,19 +53,19 @@ namespace GymAndYou.Services
 
         public int CreateMember(int gymId, UpsertMemberDTO memberDTO)
         {
-        var gym = _gymService.GetGym(gymId, "Members");
+            var gym = _gymService.GetGym(gymId, "Members");
 
-        var member = _mapper.Map<Members>(memberDTO);
+            var member = _mapper.Map<Members>(memberDTO);
 
-        member.GymId = gymId;
-        member.JoinDate = DateTime.Now;
+            member.GymId = gymId;
+            member.JoinDate = DateTime.Now;
 
-        _db.Members.Add(member);
-        _db.SaveChanges();
+            _db.Members.Add(member);
+            _db.SaveChanges();
 
-        _logger.LogInformation($"New member with ID = {member.Id} was added to gym with ID = {gymId}");
+            _logger.LogInformation($"New member with ID = {member.Id} was added to gym with ID = {gymId}");
 
-        return member.Id;
+            return member.Id;
 
         }
 
@@ -97,16 +97,16 @@ namespace GymAndYou.Services
 
         private Members GetMember(int gymId, int memberId)
         {
-        var gym = _gymService.GetGym(gymId, "Members");
+            var gym = _gymService.GetGym(gymId, "Members");
 
-        var member = gym.Members.FirstOrDefault(u => u.Id == memberId);
+            var member = gym.Members.FirstOrDefault(u => u.Id == memberId);
 
-        if (member is null)
-        {
-        throw new EntityNotFound("Member with that ID doesn't exist");
-        }
+            if (member is null)
+            {
+                throw new EntityNotFound("Member with that ID doesn't exist");
+            }
 
-        return member;
+            return member;
         }
     }
 }

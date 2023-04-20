@@ -21,22 +21,7 @@ namespace GymAndYouTESTS.ControllerTests
 
         public AccountController_TESTS(WebApplicationFactory<Program> factory)
         {
-            _factory = factory
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.ConfigureServices(services =>
-                    {
-                        var dbConnection = services.SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<DbConnection>));
-                        services.Remove(dbConnection);
-
-                        services.AddSingleton(_accountService.Object);
-
-                        services.AddDbContext<DbConnection>(option =>
-                        {
-                            option.UseInMemoryDatabase("DbForTesting");
-                        });
-                    });
-                });
+            _factory = factory.ConfigureAsInMemoryDataBase().MockService(_accountService);
             _client = _factory.CreateClient();
         }
 
@@ -73,10 +58,13 @@ namespace GymAndYouTESTS.ControllerTests
 
             // act
             var result = await _client.PostAsync("/register", createUserDto.ToJsonHttpContent());
+            var test = await result.Content.ReadAsStringAsync();
 
             // assert
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
+
+
 
         [Fact]
         public async Task LoginUser_ForValidQueryParameter_ReturnStatusCode200Ok()
@@ -102,6 +90,8 @@ namespace GymAndYouTESTS.ControllerTests
             jwtToken.Should().NotBeNull();
         }
 
+
+
         [Fact]
         public async Task LoginUser_ForInValidQueryParameter_ReturnStatusCode400BadRequest()
         {
@@ -122,7 +112,6 @@ namespace GymAndYouTESTS.ControllerTests
             result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
             var test = result.Content.ReadAsStream();
         }
-
 
 
 

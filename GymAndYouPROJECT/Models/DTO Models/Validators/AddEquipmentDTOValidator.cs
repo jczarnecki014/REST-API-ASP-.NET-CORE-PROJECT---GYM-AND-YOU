@@ -18,6 +18,22 @@ namespace GymAndYou.DTO_Models.Validators
                         context.AddFailure("BodyParts", $"Sorry but system accept only data in [ {String.Join(',', Static.BodyParts)} ] ");
                     }
                 });
+
+            RuleFor(p => p.Name)
+                .NotEmpty()
+                .NotNull()
+                .MaximumLength(100);
+
+            RuleFor(p => p.Description)
+                .NotEmpty()
+                .NotNull()
+                .MaximumLength(255);
+
+
+            RuleFor(p => p.MaxWeight)
+                .NotEmpty()
+                .NotNull();
+                
         }
     }
 }
