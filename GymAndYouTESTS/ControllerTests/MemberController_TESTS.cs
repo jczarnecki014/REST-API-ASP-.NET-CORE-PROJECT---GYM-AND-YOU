@@ -6,7 +6,9 @@ using GymAndYou.TESTS.HelpTools;
 using GymAndYouTESTS.Authentication;
 using GymAndYouTESTS.HelpTools;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using System;
+using Xunit.Abstractions;
 
 namespace GymAndYouTESTS.ControllerTests
 {
@@ -14,8 +16,10 @@ namespace GymAndYouTESTS.ControllerTests
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
+        private readonly ITestOutputHelper _outputHelper;
 
-        public MemberController_TESTS(WebApplicationFactory<Program> factory)
+
+        public MemberController_TESTS(WebApplicationFactory<Program> factory, ITestOutputHelper outputHelper)
         {
             _factory = factory.ConfigureAsInMemoryDataBase();
             _client = _factory.CreateClient();

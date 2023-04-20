@@ -33,11 +33,6 @@ namespace GymAndYou.DTO_Models.Validators
                 .NotNull()
                 .EmailAddress();
 
-            RuleFor( p => p.FirstName)
-                .NotEmpty()
-                .NotNull()
-                .MaximumLength(50);
-
             RuleFor( p => p.Phone)
                 .NotEmpty()
                 .NotNull()
